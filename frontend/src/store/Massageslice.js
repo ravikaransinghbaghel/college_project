@@ -19,14 +19,14 @@ export const massageSlice = createSlice({
           
           builder.addCase(sendMassageThunk.fulfilled, (state, action) => {
             console.log('fulfilled');
-            console.log(action.payload?.massages);
+            console.log(action.payload);
           
-            // Assuming action.payload.massages is an array
-            if (action.payload?.massages && action.payload.massages.length > 0) {
-              // Add the new message(s) to the state
-              state.massageState = [...state.massageState, ...action.payload.massages];
-              console.log(state.massageState); // Log to confirm
-            }
+          
+            // if (action.payload?.massages && action.payload.massages.length > 0) {
+            
+            //   state.massageState = [...state.massageState, ...action.payload.massages];
+            //   console.log(state.massageState); 
+            // }
           });
           
           builder.addCase(sendMassageThunk.rejected, (state, action) => {

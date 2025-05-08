@@ -10,7 +10,7 @@ function Massage() {
   const { selectoruser, userProfile } = useSelector(state => state.user);
   // const { massageState } = useSelector(state => state.massage);
   const [massage, setMassage] = useState({
-    massageText: '',
+    massagetext: '',
   });
 
   // // Update sender/receiver info
@@ -36,17 +36,15 @@ function Massage() {
   const sendMessage = async (e) => {
     e.preventDefault();
     try {
-      const res = await dispatch(sendMassageThunk({
+      await dispatch(sendMassageThunk({
         recieverId: selectoruser?._id,
-        massageText: massage.massageText,
+        massage:massagetext,
 
       }));
-      console.log("Message sent:", res);
 
-      // Clear input after sending
       setMassage(prev => ({
         ...prev,
-        massageText: ''
+        massage: ''
       }));
     } catch (err) {
       console.error(err);
@@ -69,8 +67,7 @@ function Massage() {
       <div className="send w-full h-[10%] flex items-center justify-around gap-2 px-2">
         <input
           type="text"
-          name='massageText'
-          value={massage.massageText} // ✅ added this
+          name='massagetext'
           placeholder="Type here"
           className="input input-bordered w-[90%] rounded-lg"
           onChange={handleChange}

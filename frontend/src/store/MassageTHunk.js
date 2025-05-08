@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from '../components/utilise'
 
-export const sendMassageThunk = createAsyncThunk('massage/send', async ({ massageText, recieverId }, { rejectWithValue }) => {
+export const sendMassageThunk = createAsyncThunk('massage/send', async ({ massage, recieverId }, { rejectWithValue }) => {
 
     try {
         const response = await api.post(`/message/send/${recieverId}`,
-            { massage: massageText },
+            { massage: massage },
 
         );
         // console.log(response.data);

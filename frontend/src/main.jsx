@@ -6,6 +6,8 @@ import App from './App.jsx'
 import { About, Home, Login, SignUp } from './components'
 import { Provider } from 'react-redux'
 import { store } from './store/store.js'
+import Forgot from './components/Forgot.jsx'
+import Emailverify from './components/EmailVerify.jsx'
 
 
 const router = createBrowserRouter([
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />
+      },
+      {
+        path: "/forgot",
+        element: <Forgot />
+      },
+      {
+        path: "/verify",
+        element: <Emailverify />
       },
     ]
   }

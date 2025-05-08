@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from '../components/utilise'
 
-export const loginbythunk = createAsyncThunk('users/login', async ({ username, password }, { rejectWithValue }) => {
+export const loginbythunk = createAsyncThunk('users/login', async ({ email, password }, { rejectWithValue }) => {
 
     try {
         const response = await api.post('/login', {
-            username,
+            email,
             password
         });
         // console.log(response.data);

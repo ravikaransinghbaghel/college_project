@@ -1,15 +1,15 @@
-import massage from '../models/Massage.js'
+import massageModel from '../models/Massage.js'
 import conversation from '../models/conversation.js'
 
 
 export const sendmassage = async (req, resp) => {
     try {
-        const senderId = req.user.id;
+        const senderId = req.user?.id;
         const recieverId = req.params.recieverId;
-        const massageText = req.body.massage;
-        // console.log(senderId, recieverId, massageText);
+        const { massage } = req.body;
+        console.log(senderId, recieverId, massage);
 
-        if (!recieverId || !senderId || !massageText) {
+        if (!recieverId || !senderId || !massage) {
             return resp.status(404).json({ massage: "all field are required", });
         }
 
@@ -23,11 +23,12 @@ export const sendmassage = async (req, resp) => {
 
             });
         }
-        const newMassage = await massage.create({
+        const newMassage = new massageModel({
             receiverId: recieverId,
             senderId,
-            message: massageText,
+            massage,
         });
+        await newMassage.save();
 
         if (newMassage) {
             partiConver.massages.push(newMassage._id);
@@ -56,11 +57,11 @@ export const getmassage = async (req, resp) => {
 
         let conversationMass = await conversation.find({
             participants: { $all: [myId, recieverId] }
-        }).populate("maggages");
+        }).populate("massages");
 
         resp.status(200).json({
             success: true,
-            massage: conversationMass
+            massages: conversationMass
         });
     } catch (err) {
         console.error(err);

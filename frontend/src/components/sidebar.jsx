@@ -12,17 +12,14 @@ function sidebar() {
     const { userProfile } = useSelector(state => state.user);
     // console.log('User in Sidebar:', userProfile);
     const { users } = useSelector(state => state.user);
-    // console.log('User in Sidebar:', users);
+    // console.log('Users in Sidebar:', users);
 
     const handleLogout = async (e) => {
         e.preventDefault();
         try {
-            const res = await dispatch(logoutbythunk()); // 🔥 unwrap directly gives resolved value or throws error
+            await dispatch(logoutbythunk());
             toast.success('Logout successful');
-            // console.log('Logout response:', res);
 
-            // Navigate after successful logout
-            navigate('/login');
         } catch (err) {
             console.error(err);
             toast.error(err?.message || 'Logout failed');

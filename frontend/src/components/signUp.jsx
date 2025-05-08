@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { registerbythunk } from '../store/userThunk'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function signUp() {
     const navigate = useNavigate();
@@ -16,9 +17,10 @@ function signUp() {
         email: "",
 
     });
+    const [show, setShow] = useState(false);
     useEffect(() => {
         if (isAuthenticated) {
-            navigate('/');
+            navigate('/verify');
         }
     }, [isAuthenticated]);;
 
@@ -37,7 +39,7 @@ function signUp() {
         e.preventDefault();
         try {
             await dispatch(registerbythunk(signup)).unwrap();
-            toast.success('signup successful');
+            toast.success('signup successful \n email verify code in your email');
             // console.log('signup response:', res);
 
         } catch (err) {
@@ -52,6 +54,7 @@ function signUp() {
                 <div className="hero-content flex-col  lg:flex-row-reverse">
 
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+                        <h1 className="pt-4 pl-4 text-2xl">Sign Up !!</h1>
                         <form className="card-body">
                             <div className="form-control">
                                 <label className="label">
@@ -69,13 +72,18 @@ function signUp() {
                                 <label className="label">
                                     <span className="label-text">username</span>
                                 </label>
-                                <input type="email" name='username' placeholder="email" className="input input-bordered" required onChange={handleChange} />
+                                <input type="text" name='username' placeholder="username" className="input input-bordered" required onChange={handleChange} />
                             </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="password" name='password' placeholder="password" className="input input-bordered" required onChange={handleChange} />
+                                <label className="input input-bordered flex items-center gap-2">
+                                    <input type={show ? 'text' : 'password'} name='password' placeholder="password" required onChange={handleChange} />
+                                    <span onClick={() => setShow(!show)}>
+                                        {show ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </label>
 
                             </div>
                             <div className="form-control flex gap-4">

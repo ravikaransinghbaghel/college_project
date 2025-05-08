@@ -1,16 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { loginbythunk, registerbythunk, logoutbythunk, getprofilebythunk, getusersfilebythunk } from './userThunk';
+import { loginbythunk, registerbythunk, logoutbythunk, getprofilebythunk, getusersfilebythunk, forgotPassbythunk ,emailverifybythunk} from './userThunk';
 
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
         isAthentication: false,
         userProfile: null,
-        loading: false,
         screenloading: true,
         users: null,
         selectoruser: null,
-    
+
     },
     reducers: {
         // define synco function
@@ -23,20 +22,19 @@ export const userSlice = createSlice({
 
         builder.addCase(loginbythunk.pending, (state, action) => {
             // console.log(action.payload);
-            state.userProfile = action.payload?.user;
-            state.loading = true;
+        
             state.isAthentication = false;
 
         })
         builder.addCase(loginbythunk.fulfilled, (state, action) => {
-            state.userProfile = action.payload?.user;
-            state.loading = false;
+            // state.userProfile = action.payload?.loginUser;
+            console.log(action.payload);
+            state.screenloading = false;
             state.isAthentication = true;
 
         })
         builder.addCase(loginbythunk.rejected, (state, action) => {
             // console.log('rejected');
-            state.loading = false;
             state.isAthentication = false;
         })
 
@@ -44,28 +42,25 @@ export const userSlice = createSlice({
 
         builder.addCase(registerbythunk.pending, (state, action) => {
             console.log('pending');
-            state.userProfile = action.payload?.user;
-            state.loading = true;
             state.isAthentication = false;
 
         })
         builder.addCase(registerbythunk.fulfilled, (state, action) => {
-            state.userProfile = action.payload?.user;
-            // console.log(action.payload);
+            // state.userProfile = action.payload?.user;
+            console.log(action.payload);
             state.isAthentication = true;
-            state.loading = false;
+            state.screenloading = false;
 
         })
         builder.addCase(registerbythunk.rejected, (state, action) => {
             console.log('rejected');
-            state.loading = false;
             state.isAthentication = false;
         })
 
         //logout data handling
         builder.addCase(logoutbythunk.pending, (state, action) => {
             console.log('pending');
-            state.loading = false;
+            state.screenloading = false;
             state.isAthentication = true;
 
         })
@@ -73,19 +68,18 @@ export const userSlice = createSlice({
             state.userProfile = null;
             // console.log(action.payload);
             state.isAthentication = false;
-            state.loading = true;
+            state.screenloading = true;
 
         })
         builder.addCase(logoutbythunk.rejected, (state, action) => {
             console.log('rejected');
-            state.loading = false;
+            state.screenloading = false;
             state.isAthentication = true;
         })
 
         // get profile data handling
         builder.addCase(getprofilebythunk.pending, (state, action) => {
             console.log('pending');
-            state.userProfile = action.payload?.user;
             state.isAthentication = true;
 
         })
@@ -94,7 +88,7 @@ export const userSlice = createSlice({
             state.screenloading = false;
             state.isAthentication = true;
             // console.log(action.payload);
-            state.userProfile = action.payload?.user;
+            state.userProfile = action.payload?.User;
             // console.log(state.userProfile);
 
         })
@@ -113,8 +107,8 @@ export const userSlice = createSlice({
         })
         builder.addCase(getusersfilebythunk.fulfilled, (state, action) => {
             console.log('fulfilled');
-            state.users = action.payload?.user;
-            // console.log(action.payload?.user);
+            state.users = action.payload?.users;
+            console.log(action.payload?.users);
 
 
         })
@@ -123,6 +117,36 @@ export const userSlice = createSlice({
 
         })
 
+        // forgot password 
+
+        builder.addCase(forgotPassbythunk.pending, (state, action) => {
+            console.log('pending');
+
+
+        })
+        builder.addCase(forgotPassbythunk.fulfilled, (state, action) => {
+            console.log('fulfilled');
+
+        })
+        builder.addCase(forgotPassbythunk.rejected, (state, action) => {
+            console.log('rejected');
+
+        })
+
+        // email verify 
+        builder.addCase(emailverifybythunk.pending, (state, action) => {
+            console.log('pending');
+
+
+        })
+        builder.addCase(emailverifybythunk.fulfilled, (state, action) => {
+            console.log('fulfilled');
+
+        })
+        builder.addCase(emailverifybythunk.rejected, (state, action) => {
+            console.log('rejected');
+
+        })
     }
 })
 

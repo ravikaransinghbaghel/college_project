@@ -16,11 +16,17 @@ export const register = async (req, resp) => {
     const avatarType = gender === 'male' ? 'boy' : 'girl';
     const avatar = `https://avatar.iran.liara.run/public/${avatarType}?username=${username}`;
 
-    const emailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-
+    let emailOtp = Math.floor(100000 + Math.random() * 900000).toString();
     try {
         const newUser = new user({ fullname, username, gender, password, avatar, email, emailOtp });
         await newUser.save();
+        setTimeout(() => {
+            emailOtp = null;
+            newUser.emailOtp = emailOtp;
+            newUser.save();
+        }, 1000 * 60 * 5);
+
+
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -39,7 +45,7 @@ export const register = async (req, resp) => {
                     <div style="font-size: 24px; font-weight: bold; color: #4CAF50; margin: 20px 0;">
                         ${emailOtp}
                     </div>
-                    <p>This OTP is valid for 10 minutes. Please do not share it with anyone.</p>
+                    <p>This OTP is valid for 5 minutes. Please do not share it with anyone.</p>
                     <p>If you did not request this, please ignore this email.</p>
                     <br/>
                     <p>Best regards,<br/><strong>mmit Aligarh</strong></p>
@@ -82,6 +88,10 @@ export const login = async (req, resp) => {
             return resp.status(400).json('username and password is wrong !');
         }
 
+        if (loginUser?.isEmailVerified === false) {
+            return resp.status(400).json('email is not verify !');
+        }
+
         const token = jwt.sign({ id: loginUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
         return resp.status(200)
@@ -105,25 +115,23 @@ export const login = async (req, resp) => {
 
 export const forgatPass = async (req, resp) => {
     const { email } = req.body;
-    const userId = req.user?.id;
-    console.log(userId);
-
     const randomPass = "1234567890asdfghjklpoiuytrewqzxcvbnm>!@#$%^&*";
     const len = randomPass.length;
-    let pass = "";
+    let pass="";
     for (let index = 0; index < 6; index++) {
         pass += randomPass[Math.floor(Math.random() * len)]
 
     }
 
     try {
-        const updatedUser = await user.findByIdAndUpdate(userId, { password: pass });
+        const updatedUser = await user.findOneAndUpdate(
+            { email },
+            { $set: { password: pass } },
+            { new: true }
+        );
 
         if (!updatedUser) {
             return resp.status(404).json({ message: 'User not found' });
-        }
-        if (email !== updatedUser.email) {
-            return resp.status(404).json({ message: 'email not found' });
         }
 
         const transporter = nodemailer.createTransport({
@@ -159,13 +167,7 @@ export const forgatPass = async (req, resp) => {
 
 export const logout = async (req, resp) => {
     try {
-        const userId = req.user?.id;
-        console.log(userId);
-
-        if (userId) {
-            await user.findByIdAndUpdate(userId, { isEmailVerified: false });
-            console.log(`User ${userId} isEmailVerified set to false`);
-        }
+        
         resp.status(200)
             .clearCookie("userToken", {
                 httpOnly: true,
@@ -182,8 +184,9 @@ export const logout = async (req, resp) => {
 
 export const isEmailVerification = async (req, resp) => {
     const { emailOtp } = req.body;
+    // console.log(req.user)
     try {
-        const foundUser = await user.findOne(req.user?.id);
+        const foundUser = await user.findById(req.user.id);
         if (!foundUser) return resp.status(400).json({ message: 'User not found' });
 
         if (foundUser.emailOtp !== emailOtp) return resp.status(400).json({ message: 'Invalid email OTP' });
