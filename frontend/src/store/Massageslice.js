@@ -4,7 +4,7 @@ import { sendMassageThunk, getMassageThunk } from './MassageTHunk'
 export const massageSlice = createSlice({
     name: 'massage',
     initialState: {
-        massageState: null,
+        massageState: [],
     },
     reducers: {
         // define synco function
@@ -15,38 +15,40 @@ export const massageSlice = createSlice({
 
         builder.addCase(sendMassageThunk.pending, (state, action) => {
             console.log('pending');
-          });
-          
-          builder.addCase(sendMassageThunk.fulfilled, (state, action) => {
-            console.log('fulfilled');
-            console.log(action.payload);
-          
-          
-            // if (action.payload?.massages && action.payload.massages.length > 0) {
-            
-            //   state.massageState = [...state.massageState, ...action.payload.massages];
-            //   console.log(state.massageState); 
-            // }
-          });
-          
-          builder.addCase(sendMassageThunk.rejected, (state, action) => {
+        });
+
+        builder.addCase(sendMassageThunk.fulfilled, (state, action) => {
+            console.log('send massage fulfilled');
+            // console.log(action.payload);
+
+            // // state.massageState = [...state.massageState, ...action.payload.massages];
+            // state.massageState = action.payload.massages;
+            // console.log(state.massageState.massages);
+
+        });
+
+        builder.addCase(sendMassageThunk.rejected, (state, action) => {
             console.log('rejected');
-          });
-          
+        });
+
 
         // get massage 
 
 
         builder.addCase(getMassageThunk.pending, (state, action) => {
-            console.log('pending');
+            // console.log('pending');
 
 
         })
         builder.addCase(getMassageThunk.fulfilled, (state, action) => {
-            console.log('fulfilled');
-            state.massageState = action.payload?.massage;
-            // console.log(action.payload?.massage);
+            // console.log('fulfilled');
+            // console.log(action.payload?.massages.massages);
 
+            if (Array.isArray(action.payload?.massages?.massages) && action.payload?.massages?.massages.length > 0) {
+
+                state.massageState = [...action.payload.massages?.massages];
+                // console.log(state.massageState);
+            }
 
         })
         builder.addCase(getMassageThunk.rejected, (state, action) => {

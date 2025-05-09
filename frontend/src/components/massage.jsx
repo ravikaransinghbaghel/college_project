@@ -34,19 +34,20 @@ function Massage() {
   };
 
   const sendMessage = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       await dispatch(sendMassageThunk({
         recieverId: selectoruser?._id,
-        massage:massagetext,
+        massage: massage.massagetext,
 
       }));
 
       setMassage(prev => ({
         ...prev,
-        massage: ''
+        massagetext: ''
       }));
     } catch (err) {
+      toast.error(err?.message);
       console.error(err);
     }
 

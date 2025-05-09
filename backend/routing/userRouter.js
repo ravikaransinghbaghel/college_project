@@ -8,6 +8,6 @@ userRouter.post('/login', login);
 userRouter.post('/register', register);
 userRouter.post('/isemailverufy', isAuthanication, isEmailVerification);
 userRouter.post('/forgot', forgatPass);
-userRouter.get('/users', getusers);
+userRouter.get('/users',isAuthanication, getusers);
 userRouter.get('/get-profile', isAuthanication, getProfile);
 userRouter.post('/logout', isAuthanication, logout); 

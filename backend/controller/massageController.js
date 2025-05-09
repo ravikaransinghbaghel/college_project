@@ -7,7 +7,7 @@ export const sendmassage = async (req, resp) => {
         const senderId = req.user?.id;
         const recieverId = req.params.recieverId;
         const { massage } = req.body;
-        console.log(senderId, recieverId, massage);
+        // console.log(senderId, recieverId, massage);
 
         if (!recieverId || !senderId || !massage) {
             return resp.status(404).json({ massage: "all field are required", });
@@ -55,7 +55,7 @@ export const getmassage = async (req, resp) => {
             return resp.status(404).json({ massage: "all field are required" });
         }
 
-        let conversationMass = await conversation.find({
+        let conversationMass = await conversation.findOne({
             participants: { $all: [myId, recieverId] }
         }).populate("massages");
 

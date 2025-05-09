@@ -5,12 +5,12 @@ import nodemailer from 'nodemailer';
 export const register = async (req, resp) => {
     const { fullname, username, gender, password, email } = req.body;
     if (!fullname || !username || !gender || !password || !email) {
-        return resp.status(400).json('All fields are required');
+        return resp.status(400).json({ message: 'All fields are required' });
     }
 
     const userExist = await user.findOne({ email });
     if (userExist) {
-        return resp.status(400).json('email already exists');
+        return resp.status(400).json({ message: 'email already exists' });
     }
 
     const avatarType = gender === 'male' ? 'boy' : 'girl';
@@ -18,15 +18,6 @@ export const register = async (req, resp) => {
 
     let emailOtp = Math.floor(100000 + Math.random() * 900000).toString();
     try {
-        const newUser = new user({ fullname, username, gender, password, avatar, email, emailOtp });
-        await newUser.save();
-        setTimeout(() => {
-            emailOtp = null;
-            newUser.emailOtp = emailOtp;
-            newUser.save();
-        }, 1000 * 60 * 5);
-
-
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -53,6 +44,13 @@ export const register = async (req, resp) => {
             `,
         });
 
+        const newUser = new user({ fullname, username, gender, password, avatar, email, emailOtp });
+        await newUser.save();
+        setTimeout(() => {
+            newUser.emailOtp = null;
+            newUser.save(); 
+        }, 1000 * 60 * 5);
+
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
         return resp.status(200)
@@ -70,7 +68,7 @@ export const register = async (req, resp) => {
 
     } catch (error) {
         console.log('register error: ', error);
-        return resp.status(500).json('User could not be created');
+        return resp.status(500).json({ message: 'server down \n User could not be created' });
     }
 };
 
@@ -78,18 +76,18 @@ export const login = async (req, resp) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return resp.status(400).json('All fields are required');
+        return resp.status(400).json({ message: 'All fields are required' });
     }
 
     try {
 
         const loginUser = await user.findOne({ email, password });
         if (!loginUser) {
-            return resp.status(400).json('username and password is wrong !');
+            return resp.status(400).json({ message: 'username and password is wrong !' });
         }
 
         if (loginUser?.isEmailVerified === false) {
-            return resp.status(400).json('email is not verify !');
+            return resp.status(400).json({ message: 'email is not verify !' });
         }
 
         const token = jwt.sign({ id: loginUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -109,7 +107,7 @@ export const login = async (req, resp) => {
 
     } catch (error) {
         console.log('register error: ', error);
-        return resp.status(500).json('User could not be login');
+        return resp.status(500).json({ message: 'User could not be login' });
     }
 };
 
@@ -117,7 +115,7 @@ export const forgatPass = async (req, resp) => {
     const { email } = req.body;
     const randomPass = "1234567890asdfghjklpoiuytrewqzxcvbnm>!@#$%^&*";
     const len = randomPass.length;
-    let pass="";
+    let pass = "";
     for (let index = 0; index < 6; index++) {
         pass += randomPass[Math.floor(Math.random() * len)]
 
@@ -161,13 +159,13 @@ export const forgatPass = async (req, resp) => {
 
     } catch (error) {
         console.log('Forgot password error: ', error);
-        return resp.status(500).json('Could not reset password');
+        return resp.status(500).json({ message: 'Could not reset password' });
     }
 };
 
 export const logout = async (req, resp) => {
     try {
-        
+
         resp.status(200)
             .clearCookie("userToken", {
                 httpOnly: true,
@@ -178,7 +176,7 @@ export const logout = async (req, resp) => {
 
     } catch (error) {
         console.log('register error: ', error);
-        return resp.status(500).json('User could not be login');
+        return resp.status(500).json({ message: 'User could not be login' });
     }
 };
 
@@ -207,7 +205,7 @@ export const getProfile = async (req, resp) => {
     try {
         const User = await user.findById(req.user.id);
 
-        if (!req.user) {
+        if (!User) {
             return resp.status(500).json({ message: 'User not found' });
         }
         return resp.status(200).json({
@@ -227,7 +225,7 @@ export const getusers = async (req, resp) => {
     try {
         const userExist = await user.find();
         if (!userExist) {
-            return next(new ErrorHandler(404, 'please provide valid username and password'));
+            return resp.status(500).json({ message: 'User not found' });
         }
 
         resp.status(200)

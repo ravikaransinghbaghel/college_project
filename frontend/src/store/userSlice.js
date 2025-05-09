@@ -15,6 +15,8 @@ export const userSlice = createSlice({
         // define synco function
         setSelectorUser: (state, action) => {
             state.selectoruser = action.payload;
+            console.log(action.payload);
+            
         },
 
     },
@@ -28,7 +30,7 @@ export const userSlice = createSlice({
         })
         builder.addCase(loginbythunk.fulfilled, (state, action) => {
             // state.userProfile = action.payload?.loginUser;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.screenloading = false;
             state.isAthentication = true;
 
@@ -108,7 +110,7 @@ export const userSlice = createSlice({
         builder.addCase(getusersfilebythunk.fulfilled, (state, action) => {
             console.log('fulfilled');
             state.users = action.payload?.users;
-            console.log(action.payload?.users);
+            // console.log(action.payload?.users);
 
 
         })
