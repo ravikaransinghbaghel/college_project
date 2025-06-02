@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Massage, Sidebar } from '.';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ function Home() {
 
   const { isAthentication, screenloading } = useSelector((state) => state.user);
 
-  // Redirect if not authenticated
+  
   useEffect(() => {
     console.log("home page = " + isAthentication, screenloading);
     if (!isAthentication && screenloading) {

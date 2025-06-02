@@ -1,5 +1,5 @@
 import React from 'react';
-import { setSelectorUser } from '../store/userSlice';
+import { setSelectorUser,sidebarHidden } from '../store/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 function User({ user }) {
@@ -11,6 +11,7 @@ function User({ user }) {
 
     const selectUser = () => {
         dispatch(setSelectorUser(user));
+        dispatch(sidebarHidden());
     }
 
     return (

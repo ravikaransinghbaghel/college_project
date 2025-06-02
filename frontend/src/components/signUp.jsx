@@ -4,6 +4,7 @@ import { registerbythunk } from '../store/userThunk'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Header from './Header';
 
 function signUp() {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ function signUp() {
 
         }))
 
-        console.log(signup)
+        // console.log(signup)
     }
 
     const handleClick = async (e) => {
@@ -51,8 +52,8 @@ function signUp() {
     return (
         <div>
             <div className="hero bg-base-200 min-h-screen ">
-                <div className="hero-content flex-col  lg:flex-row-reverse">
-
+                <div className="hero-content flex-col">
+                    <Header />
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                         <h1 className="pt-4 pl-4 text-2xl">Sign Up !!</h1>
                         <form className="card-body">

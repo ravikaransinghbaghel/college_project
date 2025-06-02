@@ -5,9 +5,9 @@ export const massageSlice = createSlice({
     name: 'massage',
     initialState: {
         massageState: [],
+        chackMassage:''
     },
     reducers: {
-        // define synco function
 
 
     },
@@ -21,9 +21,9 @@ export const massageSlice = createSlice({
             console.log('send massage fulfilled');
             // console.log(action.payload);
 
-            // // state.massageState = [...state.massageState, ...action.payload.massages];
-            // state.massageState = action.payload.massages;
-            // console.log(state.massageState.massages);
+            // state.massageState = [...state.massageState, action.payload.massages];
+            // // state.massageState = action.payload.massages;
+            // console.log(state.massageState);
 
         });
 
@@ -42,11 +42,12 @@ export const massageSlice = createSlice({
         })
         builder.addCase(getMassageThunk.fulfilled, (state, action) => {
             // console.log('fulfilled');
-            // console.log(action.payload?.massages.massages);
+            state.chackMassage=action.payload?.massages;
+            // console.log(state.chackMassage);
 
             if (Array.isArray(action.payload?.massages?.massages) && action.payload?.massages?.massages.length > 0) {
 
-                state.massageState = [...action.payload.massages?.massages];
+                state.massageState = action.payload.massages?.massages;
                 // console.log(state.massageState);
             }
 

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { loginbythunk, registerbythunk, logoutbythunk, getprofilebythunk, getusersfilebythunk, forgotPassbythunk ,emailverifybythunk} from './userThunk';
+import { loginbythunk, registerbythunk, logoutbythunk, getprofilebythunk, getusersfilebythunk, forgotPassbythunk, emailverifybythunk, searchbythunk } from './userThunk';
+
 
 export const userSlice = createSlice({
     name: 'user',
@@ -9,22 +10,28 @@ export const userSlice = createSlice({
         screenloading: true,
         users: null,
         selectoruser: null,
-
+        hidden: 'massage',
     },
     reducers: {
         // define synco function
         setSelectorUser: (state, action) => {
             state.selectoruser = action.payload;
-            console.log(action.payload);
-            
+            // console.log(action.payload);
+
         },
+        sidebarHidden: (state, action) => {
+            state.hidden = "sidebar";
+        },
+        massageHidden: (state, action) => {
+            state.hidden = "massage";
+        }
 
     },
     extraReducers: (builder) => {
 
         builder.addCase(loginbythunk.pending, (state, action) => {
             // console.log(action.payload);
-        
+
             state.isAthentication = false;
 
         })
@@ -119,6 +126,24 @@ export const userSlice = createSlice({
 
         })
 
+        // search user
+         builder.addCase(searchbythunk.pending, (state, action) => {
+            console.log('pending');
+
+
+        })
+        builder.addCase(searchbythunk.fulfilled, (state, action) => {
+            console.log('fulfilled');
+            state.searchusers = action.payload?.users;
+            console.log(action.payload);
+
+
+        })
+        builder.addCase(searchbythunk.rejected, (state, action) => {
+            console.log('rejected');
+
+        })
+
         // forgot password 
 
         builder.addCase(forgotPassbythunk.pending, (state, action) => {
@@ -153,6 +178,6 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setSelectorUser, extraReducers } = userSlice.actions
+export const { setSelectorUser, extraReducers ,sidebarHidden,massageHidden} = userSlice.actions
 
 export default userSlice.reducer

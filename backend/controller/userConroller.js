@@ -1,4 +1,5 @@
 import user from '../models/users.js';
+import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
@@ -48,7 +49,7 @@ export const register = async (req, resp) => {
         await newUser.save();
         setTimeout(() => {
             newUser.emailOtp = null;
-            newUser.save(); 
+            newUser.save();
         }, 1000 * 60 * 5);
 
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -223,10 +224,49 @@ export const getProfile = async (req, resp) => {
 
 export const getusers = async (req, resp) => {
     try {
-        const userExist = await user.find();
-        if (!userExist) {
+        const userExist = await user.aggregate([
+            {
+                $match: {
+                    _id: { $ne: new mongoose.Types.ObjectId(req.user.id) }
+                }
+            },
+            {
+                $lookup: {
+                    from: "massages", 
+                    let: { userId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $or: [
+                                        { $eq: ["$senderId", "$$userId"] },
+                                        { $eq: ["$receiverId", "$$userId"] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $sort: { updatedAt: -1 }
+                        }
+                    ],
+                    as: "massages"
+                }
+            },
+            {
+                $addFields: {
+                    latestMassageUpdate: { $max: "$massages.updatedAt" }
+                }
+            },
+            {
+                $sort: {
+                    latestMassageUpdate: -1
+                }
+            },
+        ]);
+
+        if (!userExist)
             return resp.status(500).json({ message: 'User not found' });
-        }
+
 
         resp.status(200)
             .json({
@@ -239,3 +279,22 @@ export const getusers = async (req, resp) => {
         resp.status(500).json({ message: 'Server error' });
     }
 }
+
+export const searchuser = async (req, res) => {
+    const q = req.query.q;
+
+    try {
+        if (!q || q.trim() === '') {
+            return res.json({ users: [] });
+        }
+
+        const results = await user.find({
+            fullname: { $regex: q, $options: 'i' },
+        });
+
+        res.json({ users: results });
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};

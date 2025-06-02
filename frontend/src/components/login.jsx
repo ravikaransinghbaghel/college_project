@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginbythunk } from '../store/userThunk';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Header from './Header';
 
 function login() {
     const navigate = useNavigate();
@@ -16,11 +17,11 @@ function login() {
     });
     const [show, setShow] = useState(false);
     useEffect(() => {
-        console.log("login page " + isAthentication, screenloading);
-        if (isAthentication && !screenloading ) {
+        // console.log("login page " + isAthentication, screenloading);
+        if (isAthentication && !screenloading) {
             navigate('/');
         }
-    }, [isAthentication,screenloading]);
+    }, [isAthentication, screenloading]);
 
     const handleChange = (e) => {
         setLogin((pre) => ({
@@ -42,8 +43,8 @@ function login() {
     return (
         <>
             <div className="hero bg-base-200 min-h-screen">
-                <div className="hero-content  flex-col lg:flex-row-reverse">
-
+                <div className="hero-content  flex-col ">
+                    <Header />
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                         <h1 className="pt-4 pl-4 text-2xl">login !!</h1>
                         <form className="card-body">

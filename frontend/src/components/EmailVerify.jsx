@@ -3,7 +3,8 @@ import { Link, useNavigate, } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { emailverifybythunk } from '../store/userThunk';
-import {  IoIosClose } from 'react-icons/io';
+import { IoIosClose } from 'react-icons/io';
+import Header from './Header';
 
 function Emailverify() {
     const navigate = useNavigate();
@@ -35,12 +36,12 @@ function Emailverify() {
     return (
         <div>
             <div className="hero bg-base-200 min-h-screen">
-                <div className="hero-content  flex-col lg:flex-row-reverse">
-
+                <div className="hero-content  flex-col">
+                    <Header />
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl pr-2">
                         <div className="flex justify-between pt-4 pl-4 text-2xl">
                             <h1 className="">verify email !!</h1>
-                            <h1 onClick={()=>{navigate('/signup')}}><IoIosClose /></h1>
+                            <h1 onClick={() => { navigate('/signup') }}><IoIosClose /></h1>
                         </div>
                         <form className="card-body">
                             <div className="form-control">

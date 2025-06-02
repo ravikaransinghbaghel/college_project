@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { CiSearch } from "react-icons/ci";
 import User from './User';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutbythunk } from '../store/userThunk';
+import { logoutbythunk, searchbythunk } from '../store/userThunk';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-function sidebar() {
+function sidebar({ onclick }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { userProfile } = useSelector(state => state.user);
-    // console.log('User in Sidebar:', userProfile);
-    const { users } = useSelector(state => state.user);
-    // console.log('Users in Sidebar:', users);
+    const [query, setquery] = useState('');
+    const { userProfile, users, hidden } = useSelector(state => state.user);
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -26,14 +24,26 @@ function sidebar() {
         }
     };
 
+    const searchquery = (e) => {
+        setquery(() => (e.target.value))
+        console.log(query);
+        dispatch(searchbythunk(query))
+    }
+
     return (
-        <div className='w-[25%] h-full '>
-            <div className="flex justify-center w-[99%] h-11 rounded-md bg-black text-white">
-                whatapp
+        <div className={`${hidden == 'sidebar' ? 'hidden' : 'block'} w-full sm:block sm:w-[25%] h-full `}>
+            <div className="flex justify-center items-center w-[99%] h-11 rounded-md bg-[rgb(29,35,42)] text-xl font-serif">
+                Ke-Haal-Chal
             </div>
             <div className="search flex justify-center pt-2">
                 <label className="input input-bordered flex w-[99%] items-center gap-2">
-                    <input type="text" className="grow" placeholder="Search" />
+                    <input type="text"
+                        className="grow"
+                        name='search'
+                        placeholder="Search"
+                        value={query}
+                        onChange={searchquery}
+                    />
                     <CiSearch />
                 </label>
             </div>

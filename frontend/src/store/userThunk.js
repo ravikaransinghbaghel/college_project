@@ -34,7 +34,7 @@ export const registerbythunk = createAsyncThunk('users/signup', async ({ usernam
     }
 });
 
-export const emailverifybythunk = createAsyncThunk('users/verify', async ({emailOtp }, { rejectWithValue }) => {
+export const emailverifybythunk = createAsyncThunk('users/verify', async ({ emailOtp }, { rejectWithValue }) => {
 
     try {
         const response = await api.post('/isemailverufy', {
@@ -53,6 +53,20 @@ export const forgotPassbythunk = createAsyncThunk('users/forgot', async ({ email
     try {
         const response = await api.post('/forgot', {
             email
+        });
+        // console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return rejectWithValue(error.response.data);
+    }
+});
+
+export const searchbythunk = createAsyncThunk('users/search', async ({ query }, { rejectWithValue }) => {
+
+    try {
+        const response = await api.get(`/search`, {
+            params: { q: query },
         });
         // console.log(response.data);
         return response.data;
